@@ -1,2 +1,2 @@
 # QaBot
-This is StachOverflow like online question answer platform with minimal features.
+This is a StachOverflow like online question-answer platform with minimal features.
