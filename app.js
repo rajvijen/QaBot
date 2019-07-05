@@ -1,14 +1,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
+const passport = require('passport'); 
 
-const User = require('./models/User');
+// Import all routes
+const auth = require('./routes/api/auth');
+//TODO
+//TODO
 
 const app = express();
 
 //Middleware for bodyparser
 app.use(bodyparser.urlencoded({ extended: false}));
-app.use(bodyparser.json());
+app.use(bodyparser.json());     //Now, We are in APIs world
 
 // DB Config
 const db = require('./config/dev').mongodbURI;
@@ -19,71 +23,27 @@ mongoose
   .then(() => console.log('MongoDB Connected...'))
   .catch(err => console.log(err));
 
-//-------------------------------------------------------
-//------------ APIs ------------------------------------
-//For testing purpose only
+// passport middleware
+app.use(passport.initialize());
+
+//Configuration for passport JWT strategy
+require("./strategies/jsonwtStrategy")(passport);
+
+//------------------------------------
+//----- APIs (moved to route/apis) ---
+//For testing purpose only -> route
 app.get("/", (req, res) => {
+	// console.log("Welcome to Qabot");
 	res.status(200).end("Welcome to QaBot...");
 }); 
 
-// USer SignUp
-app.post("/signup", async (req, res) => {
-	const newUser = new User({
-		name: req.body.name,
-		password: req.body.password
-	});
-	
-	//await newUser
-	//	.save()
-	//	.then(() => {
-	//		res.status(200).send(newUser);
-	//	})
-	await User.findOne({ name: newUser.name})
-		.then(async profile => {
-			if(!profile){
-				await newUser
-					.save()
-					.then(() => {
-						res.status(200).send(newUser);
-					})
-					.catch(err => {
-						console.log("Error is ",err.message);
-					});
-			} else{
-				res.send("User already exists!!!");
-			}
-		})
-		.catch(err => {
-			console.log("Error is ", err.message);
-		});
-});
-
-
-// @Login
-app.post("/login", async (req, res) => {
-	const newUser = {};
-	newUser.name = req.body.name;
-	newUser.password = req.body.password;
-	
-	await User.findOne({ name: newUser.name })
-		.then(profile => {
-			if(!profile){
-				res.send("User not exist!");
-			} else {
-				if(profile.password == newUser.password){
-					res.send("User is authenticated...");
-				} else {
-					res.send("User Unauthorized Access!!!");
-				}
-			}
-		})
-		.catch(err => {
-			console.log("Error is ", err.message);
-		});
-});
-
+// Use routes
+app.use('/api/auth', auth);
+//TODO
+//TODO 
 
 // Server setup
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+app.listen(port, () => console.log(`Server/App is running on port ${port}`));
+
