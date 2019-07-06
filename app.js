@@ -6,7 +6,7 @@ const passport = require('passport');
 // Import all routes
 const auth = require('./routes/api/auth');
 const profile = require('./routes/api/profile');
-//TODO
+const questions = require('./routes/api/questions');
 
 const app = express();
 
@@ -40,7 +40,7 @@ app.get("/", (req, res) => {
 // Use routes
 app.use('/api/auth', auth);
 app.use('/api/profile', profile);
-//TODO 
+app.use('/api/questions', questions);
 
 // Server setup
 const port = process.env.PORT || 3000;
