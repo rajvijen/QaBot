@@ -1,3 +1,4 @@
+// Userful module Imports first
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
@@ -30,14 +31,14 @@ app.use(passport.initialize());
 require("./strategies/jsonwtStrategy")(passport);
 
 //------------------------------------
-//----- APIs (moved to route/apis) ---
+//----- APIs (shiped to route/apis) ---
 //For testing purpose only -> route
 app.get("/", (req, res) => {
 	// console.log("Welcome to Qabot");
 	res.status(200).end("Welcome to QaBot...");
 }); 
 
-// Use routes
+// Use routes for access to API endpoints
 app.use('/api/auth', auth);
 app.use('/api/profile', profile);
 app.use('/api/questions', questions);

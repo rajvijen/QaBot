@@ -1,21 +1,23 @@
 const express = require('express');
 const bcrypt =  require('bcryptjs');
 const jsonwt = require('jsonwebtoken');
-const passport = require('passport');  //To be needed for profile auth
+const passport = require('passport');  //To be needed for profile auth(Very Useful for user authentication)
 const key = require('../../config/dev'); 
+
+// Import Person Model
+const Person = require('../../models/Person');
 
 // Make routes to server/app
 const router = express.Router();
 
+// ----------------------- { Test for API endpoints }--------------------------
 // @type/Method    GET
 // @route          /api/auth/test
 // @desc           just for testing
 // @access         PUBLIC
 router.get("/test", (req, res) => res.json({ test: "Auth is being tested..."}));
 
-// Import Person Model
-const Person = require('../../models/Person');
-
+//---------------------- { user Registeration API endpoint }--------------
 // @type/Method    POST
 // @route          /api/auth/register
 // @desc           person/user registeration route
@@ -49,6 +51,7 @@ router.post("/register", (req, res) => {
       .catch(err => console.log(err));
 });
 
+//---------------------- { user Login API endpoint }------------------------
 // @type/Method     POST
 //@route            /api/auth/login
 // @desc            Login User/Returning JWT Token
@@ -93,15 +96,12 @@ router.post("/login", (req, res) => {
         .catch(err => console.log(err));
 });
 
+//---------------------- { user private view Profile API endpoint }--------------
 // @type/Method     GET
 //@route            /api/auth/profile
 // @desc            Return current user's profile(route for user profile)
 // @access          PRIVATE
-router.get(
-    '/profile',
-    passport.authenticate('jwt',{ session: false }),
-    (req, res) => {
-        //console.log(req)
+router.get('/profile', passport.authenticate('jwt',{ session: false }), (req, res) => {
         res.json({
             id: req.user.id,
             name: req.user.email,

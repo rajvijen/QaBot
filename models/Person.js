@@ -20,7 +20,7 @@ const PersonSchema = new Schema({
 	},
 	profilepic:{
 		type: String,
-		default: "https://learncodeonline.in/manicon.png"
+		default: "https://cdn.imgbin.com/11/20/21/imgbin-computer-icons-user-profile-avatar-avatar-3ibtXvqfT3fcZQFVKBUKBL8Bb.jpg"
 	},
 	date:{
 		type: Date,

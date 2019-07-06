@@ -2,26 +2,26 @@ const express = require('express');
 //const mongoose = require('mongoose');
 const passport = require('passport');
 
-const router = express.Router();
-
 // Import Person Model 
 const Person = require('../../models/Person');
 
 // Import Profile Model
 const Profile = require('../../models/Profile');
 
+// Make routes to server/app
+const router = express.Router();
+
+// ----------------------- { Test for API endpoints }-----------------------
 // @route   GET api/profile/test
 // @desc    Tests profile route
 // @access  PUBLIC
 router.get("/test", (req, res) => res.json({ test: "Profile is being tested..."}));
 
+//---------------------- { current user private profile API endpoint }----------
 // @route   GET api/profile
 // @desc    Get current users/person's profile
 // @access  PRIVATE
-router.get(
-    '/', 
-    passport.authenticate('jwt', { session: true }),
-    (req, res) => {
+router.get('/', passport.authenticate('jwt', { session: true }), (req, res) => {
         Profile.findOne({ user: req.user.id })
             .then(profile => {
                 if(!profile){
@@ -31,17 +31,15 @@ router.get(
                 res.json(profile);
             })
             .catch(err => console.log("Got some error in profile" + err));
-    });
-// ---------------------------------------------
+});
+
+//---------------------- { user profile updation API endpoint }--------------
 // @type/Method    POST
 //@route           /api/profile/
 // @desc           route for UPDATING/SAVING personal user profile
 // @access         PRIVATE
-router.post(
-    '/',
-    passport.authenticate('jwt',{ session: false}),(req, res) => {
-        
-        // Get fields/Values
+router.post('/', passport.authenticate('jwt', { session: false}), (req, res) => {
+        // Get profile fields/Values
         const profileValues = {};
         profileValues.user = req.user.id;
         if(req.boby.username) profileValues.username = req.body.username;
@@ -67,7 +65,6 @@ router.post(
                 if (profile) {
                     // If profile not exist, then create a new one, Otherwise just update 
 
-
                     Profile.findOneAndUpdate(
                         { user: req.user.id },
                         { $set: profileValues },
@@ -92,8 +89,9 @@ router.post(
                 }
             })
             .catch(err => console.log("Problem occuring to fetching profile" + err));
-    });
+});
 
+//---------------------- { user's username public access API endpoint }--------------
 // @type/Method     GET
 //@route            /api/profile/:username
 // @desc            route for getting user profile based on USERNAME
@@ -110,6 +108,7 @@ router.get('/:username', (req, res) => {
         .catch(err => console.log("Error in the process of username fetching!!!" + err));
 });
 
+//---------------------- { To search all user's profile, API endpoint }--------------
 // @type/Method         GET
 //@route                /api/profile/find/everyone
 // @desc                route for getting user profile of all_users
@@ -126,14 +125,12 @@ router.get('/find/everyone', (req, res) => {
         .catch(err => console.log("There are no pofiles!!!" + err));
 });
 
+//------------------ { To delete user profile privetely, API endpoint }--------------
 // @type/Method        DELETE
 //@route               /api/profile/
 // @desc               route for deleting user based on ID
 // @access             PRIVATE
-router.delete(
-    '/',
-    passport.authenticate('jwt', {session: false }),
-    (req, res) => {
+router.delete('/', passport.authenticate('jwt', {session: false }), (req, res) => {
         Profile.findOne({ user: req.user.id });
         Profile.findAndremove({ _id: req.user.id })     
         .then(() => {
@@ -145,15 +142,12 @@ router.delete(
         .catch(err => console.log(err));
 });
 
-// ---------------------------------------------
+//---------------------- { user workrole private API endpoint }--------------
 // @type/Methos         POST
 //@route                /api/profile/workrole
 // @desc                route for adding work profile of a person
 // @access              PRIVATE
-router.post(
-    '/workrole',
-    passport.authenticate('jwt', { session: true }),
-    (req, res) => {
+router.post('/workrole', passport.authenticate('jwt', { session: true }), (req, res) => {
         Profile.findOne({ user: req.user.id })
             .then(profile => {
                 const newWork = {
@@ -166,7 +160,7 @@ router.post(
                     details: req.body.details
                 };
                 
-                profile.workrole.unshift(newwork);
+                profile.workrole.unshift(newWork);
                 profile
                     .save()
                     .then(profile => res.json(profile))
@@ -175,15 +169,12 @@ router.post(
             .catch(err => console.log(err));
 });
 
+//------------------- { To delete user's workrole privetely, API endpoint }-------------
 // @type/Method         DELETE
 //@route                /api/profile/workrole/:w_id
 // @desc                route for deleting a specific workrole
 // @access              PRIVATE
-
-router.delete(
-    '/workrole/:w_id',
-    passport.authenticate('jwt', { session: false }),
-    (req, res) => {
+router.delete('/workrole/:w_id', passport.authenticate('jwt', { session: false }), (req, res) => {
         Profile.findOne({ user: req.user.id })
             .then(profile => {
                 //Check, if we got a profile

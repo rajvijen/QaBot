@@ -1,5 +1,4 @@
 const express = require("express");
-const router = express.Router();
 const mongoose = require("mongoose");
 const passport = require("passport");
 
@@ -11,6 +10,9 @@ const Profile = require("../../models/Profile");
 
 //Import Question Model
 const Question = require("../../models/Question");
+
+// Make routes to server/app
+const router = express.Router();
 
 // ---------------------------------------- { Questions API endpoints }-------------------
 // @type/Method         GET
@@ -88,8 +90,6 @@ router.post('/upvote/:id', passport.authenticate('jwt', { session: false }), (re
             })
             .catch(err => console.log(err));
 });
-
-
 
 
 module.exports = router;
