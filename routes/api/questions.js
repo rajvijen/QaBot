@@ -42,5 +42,57 @@ router.post(
             .then(question => res.json(question))
             .catch(err => console.log("Unable to push question to the DB!!!" + err));
 });
+ 
+// @type/Method         POST
+//@route                /api/questions/answers/:id
+// @desc                private route for submitting answers to an existing question
+// @access              PRIVATE
+router.post(
+    '/answers/:id',
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+        Question.findById(req.params.id)
+            .then(question => {
+                const newAnswer = {
+                    user: req.user.id,
+                    name: req.body.name,
+                    text: req.body.text
+                };
+                question.answers.unshift(newAnswer);
+  
+                question
+                    .save()
+                    .then(question => res.json(question))
+                    .catch(err => console.log(err));
+            })
+            .catch(err => console.log(err));
+});
+
+// TODO
+// @type/Method         POST
+//@route                /api/questions/upvote/:id
+// @desc                route to increase upvote array 
+// @access              PRIVATE
+// router.post(
+//     '/upvote/:id',
+//     passport.authenticate('jwt', { session: false }),
+//     (req, res) => {
+
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = router;
