@@ -5,7 +5,7 @@ const passport = require('passport');
 
 // Import all routes
 const auth = require('./routes/api/auth');
-//TODO
+const profile = require('./routes/api/profile');
 //TODO
 
 const app = express();
@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
 
 // Use routes
 app.use('/api/auth', auth);
-//TODO
+app.use('/api/profile', profile);
 //TODO 
 
 // Server setup
