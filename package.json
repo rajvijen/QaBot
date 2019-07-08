@@ -5,8 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "startt-dev": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "startt-dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",
