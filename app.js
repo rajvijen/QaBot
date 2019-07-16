@@ -30,6 +30,14 @@ app.use(passport.initialize());
 //Configuration for passport JWT strategy
 require("./strategies/jsonwtStrategy")(passport);
 
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
 //------------------------------------
 //----- APIs (shiped to route/apis) ---
 //For testing purpose only -> route
